@@ -25,6 +25,7 @@ use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use CIHub\Bundle\SimpleRESTAdapterBundle\Extractor\LabelExtractorInterface;
 use CIHub\Bundle\SimpleRESTAdapterBundle\Manager\IndexManager;
@@ -180,15 +181,17 @@ class ConfigController extends AdminController
             $reader = new ConfigReader($configuration->getConfiguration());
             $savedModificationDate = $reader->getModificationDate();
 
-            if ($modificationDate < $savedModificationDate) {
-                throw new RuntimeException('The configuration was modified during editing, please reload the configuration and make your changes again.');
-            }
+            // ToDo Fix modifcationDate
+//            if ($modificationDate < $savedModificationDate) {
+//                throw new RuntimeException('The configuration was modified during editing, please reload the configuration and make your changes again.');
+//            }
 
             $oldConfig = $reader->toArray();
             $newConfig = $newConfigReader->toArray();
             $newConfig['general']['modificationDate'] = time();
 
             $preSaveEvent = new GetModifiedConfigurationEvent($newConfig, $oldConfig);
+
             $eventDispatcher->dispatch($preSaveEvent, SimpleRESTAdapterEvents::CONFIGURATION_PRE_SAVE);
 
             $newConfig = $preSaveEvent->getModifiedConfiguration() ?? $newConfig;

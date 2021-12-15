@@ -19,11 +19,6 @@ use Pimcore\Bundle\DataHubBundle\Configuration\Dao;
 
 final class DataHubConfigurationRepository
 {
-    /**
-     * @param string $name
-     *
-     * @return Configuration|null
-     */
     public function findOneByName(string $name): ?Configuration
     {
         return Dao::getByName($name);

@@ -14,6 +14,7 @@
 
 namespace CIHub\Bundle\SimpleRESTAdapterBundle\DataCollector;
 
+use Exception;
 use Pimcore\Model\Asset;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -36,6 +37,7 @@ final class ImageDataCollector implements DataCollectorInterface
 
     /**
      * {@inheritdoc}
+     * @throws Exception
      */
     public function collect($value, ConfigReader $reader): array
     {
@@ -49,7 +51,7 @@ final class ImageDataCollector implements DataCollectorInterface
 
         if ($reader->isOriginalImageAllowed()) {
             $data['binaryData']['original'] = [
-                'checksum' => $value->getChecksum(),
+                'checksum' => $this->getChecksum($value),
                 'path' => $this->router->generate('simple_rest_adapter_endpoints_download_asset', [
                     'config' => $reader->getName(),
                     'id' => $id,
@@ -60,19 +62,19 @@ final class ImageDataCollector implements DataCollectorInterface
 
         // Explicitly disable WebP support, because Adobe's browser is Chromium based,
         // but e.g. Adobe InDesign doesn't support WebP images.
-        Asset\Image\Thumbnail\Processor::setHasWebpSupport(false);
+//        Asset\Image\Thumbnail\Processor::setHasWebpSupport(false);
 
         foreach ($thumbnails as $thumbnailName) {
             $thumbnail = $value->getThumbnail($thumbnailName);
 
             $data['binaryData'][$thumbnailName] = [
-                'checksum' => $thumbnail->getChecksum(),
+                'checksum' => $this->getChecksum($thumbnail->getAsset()),
                 'path' => $this->router->generate('simple_rest_adapter_endpoints_download_asset', [
                     'config' => $reader->getName(),
                     'id' => $id,
                     'thumbnail' => $thumbnailName,
                 ], UrlGeneratorInterface::ABSOLUTE_PATH),
-                'filename' => pathinfo($thumbnail->getFileSystemPath(), PATHINFO_BASENAME),
+                'filename' => pathinfo($thumbnail->getLocalFile(), PATHINFO_BASENAME),
             ];
         }
 
@@ -85,5 +87,29 @@ final class ImageDataCollector implements DataCollectorInterface
     public function supports($value): bool
     {
         return $value instanceof Asset\Image;
+    }
+
+    /**
+     * @param Asset     $asset
+     * @param string    $type
+     *
+     * @return null|string
+     *
+     * @throws Exception
+     */
+    private function getChecksum(Asset $asset, $type = 'md5'): ?string
+    {
+        $file = $asset->getLocalFile();
+        if (is_file($file)) {
+            if ($type == 'md5') {
+                return md5_file($file);
+            } elseif ($type == 'sha1') {
+                return sha1_file($file);
+            } else {
+                throw new Exception("hashing algorithm '" . $type . "' isn't supported");
+            }
+        }
+
+        return null;
     }
 }

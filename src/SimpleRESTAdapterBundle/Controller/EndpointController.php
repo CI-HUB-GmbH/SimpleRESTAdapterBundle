@@ -70,20 +70,22 @@ class EndpointController extends BaseEndpointController
         if (null !== $thumbnail && ($asset instanceof Asset\Image || $asset instanceof Asset\Document)) {
             // Explicitly disable WebP support, because Adobe's browser is Chromium based,
             // but e.g. Adobe InDesign doesn't support WebP images.
-            Asset\Image\Thumbnail\Processor::setHasWebpSupport(false);
+            // Asset\Image\Thumbnail\Processor::setHasWebpSupport(false);
 
             if (AssetProvider::CIHUB_PREVIEW_THUMBNAIL === $thumbnail && 'ciHub' === $reader->getType() &&
                 !Thumbnail\Config::getByName(AssetProvider::CIHUB_PREVIEW_THUMBNAIL) instanceof Thumbnail\Config) {
                 if ($asset instanceof Asset\Image) {
-                    $file = $asset->getThumbnail($defaultPreviewThumbnail)->getFileSystemPath();
+                    $file = $asset->getThumbnail($defaultPreviewThumbnail)->getLocalFile();
                 } else {
-                    $file = $asset->getImageThumbnail($defaultPreviewThumbnail)->getFileSystemPath();
+                    $file = $asset->getImageThumbnail($defaultPreviewThumbnail)->getLocalFile();
                 }
             } else if ($asset instanceof Asset\Image) {
-                $file = $asset->getThumbnail($thumbnail)->getFileSystemPath();
+                $file = $asset->getThumbnail($thumbnail)->getLocalFile();
             } else {
-                $file = $asset->getImageThumbnail($thumbnail)->getFileSystemPath();
+                $file = $asset->getImageThumbnail($thumbnail)->getLocalFile();
+
             }
+
 
             if ($asset instanceof Asset\Document && !$this->isPdfDocument($asset)) {
                 $disposition = ResponseHeaderBag::DISPOSITION_ATTACHMENT;
@@ -91,11 +93,12 @@ class EndpointController extends BaseEndpointController
                 $disposition = ResponseHeaderBag::DISPOSITION_INLINE;
             }
         } else {
-            $file = $asset->getFileSystemPath();
+            $file = $asset->getLocalFile();
             $disposition = ResponseHeaderBag::DISPOSITION_ATTACHMENT;
         }
 
-        $response = $this->file($file, pathinfo($file, PATHINFO_BASENAME), $disposition);
+
+        $response = $this->file($file, pathinfo($asset, PATHINFO_BASENAME), $disposition);
         $response->headers->add($crossOriginHeaders);
 
         return $response;
@@ -140,6 +143,7 @@ class EndpointController extends BaseEndpointController
         foreach ($indices as $index) {
             try {
                 $result = $indexService->get($id, $index);
+                dd($id, $index, $result);
             } catch (Missing404Exception $exception) {
                 $result = [];
             }

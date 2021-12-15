@@ -35,7 +35,7 @@ class SimpleRESTAdapterExtension extends Extension implements PrependExtensionIn
     {
         $bundles = $container->getParameter('kernel.bundles');
 
-        if (isset($bundles['CIHubAdapterBundle'])) {
+        if (isset($bundles['PimcoreCIHubAdapterBundle'])) {
             $this->ciHubConfig = $container->getExtensionConfig('ci_hub_adapter');
         }
     }

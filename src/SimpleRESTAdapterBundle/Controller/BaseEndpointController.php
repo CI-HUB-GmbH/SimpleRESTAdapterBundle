@@ -23,7 +23,7 @@ use ONGR\ElasticsearchDSL\Sort\FieldSort;
 use Pimcore\Bundle\DataHubBundle\Configuration;
 use Pimcore\Controller\FrontendController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\HttpFoundation\RequestStack;
 use CIHub\Bundle\SimpleRESTAdapterBundle\Exception\AccessDeniedException;
 use CIHub\Bundle\SimpleRESTAdapterBundle\Exception\ConfigurationNotFoundException;
 use CIHub\Bundle\SimpleRESTAdapterBundle\Exception\ElementNotFoundException;
@@ -71,23 +71,24 @@ abstract class BaseEndpointController extends FrontendController
     protected $request;
 
     /**
+     * @var RequestStack
+     */
+    protected $requestStack;
+
+    /**
      * @param DataHubConfigurationRepository $configRepository
      * @param LabelExtractorInterface        $labelExtractor
+     * @param RequestStack                   $requestStack
      */
     public function __construct(
         DataHubConfigurationRepository $configRepository,
-        LabelExtractorInterface $labelExtractor
+        LabelExtractorInterface $labelExtractor,
+        RequestStack $requestStack
     ) {
         $this->configRepository = $configRepository;
         $this->labelExtractor = $labelExtractor;
-    }
-
-    /**
-     * @param FilterControllerEvent $event
-     */
-    public function onKernelController(FilterControllerEvent $event): void
-    {
-        $this->request = $event->getRequest();
+        $this->requestStack = $requestStack;
+        $this->request = $this->requestStack->getMainRequest();
         $this->config = $this->request->get('config');
     }
 

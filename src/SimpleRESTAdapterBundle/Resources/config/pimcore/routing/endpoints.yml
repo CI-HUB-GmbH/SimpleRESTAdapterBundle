@@ -1,7 +1,7 @@
 # Download Asset
 simple_rest_adapter_endpoints_download_asset:
     path: /download-asset
-    defaults: { _controller: SimpleRESTAdapterBundle:Endpoint:downloadAsset }
+    defaults: { _controller: CIHub\Bundle\SimpleRESTAdapterBundle\Controller\EndpointController::downloadAssetAction }
     methods:
         - GET
         - OPTIONS
@@ -9,20 +9,20 @@ simple_rest_adapter_endpoints_download_asset:
 # Get Element
 simple_rest_adapter_endpoints_get_element:
     path: /get-element
-    defaults: { _controller: SimpleRESTAdapterBundle:Endpoint:getElement }
+    defaults: { _controller: CIHub\Bundle\SimpleRESTAdapterBundle\Controller\EndpointController::getElementAction }
     methods:
         - GET
 
 # Search
 simple_rest_adapter_endpoints_search:
     path: /search
-    defaults: { _controller: SimpleRESTAdapterBundle:Endpoint:search }
+    defaults: { _controller: CIHub\Bundle\SimpleRESTAdapterBundle\Controller\EndpointController::searchAction }
     methods:
         - GET
 
 # Tree Items
 simple_rest_adapter_endpoints_tree_items:
     path: /tree-items
-    defaults: { _controller: SimpleRESTAdapterBundle:Endpoint:treeItems }
+    defaults: { _controller: CIHub\Bundle\SimpleRESTAdapterBundle\Controller\EndpointController::treeItemsAction }
     methods:
         - GET

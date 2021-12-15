@@ -51,6 +51,7 @@ final class AssetProvider implements ProviderInterface
 
     /**
      * {@inheritdoc}
+     * @throws Exception
      */
     public function getIndexData(ElementInterface $element, ConfigReader $reader): array
     {
@@ -86,10 +87,11 @@ final class AssetProvider implements ProviderInterface
     /**
      * Returns the binary data values of an asset.
      *
-     * @param Asset        $asset
+     * @param Asset $asset
      * @param ConfigReader $reader
      *
      * @return array<string, array>
+     * @throws Exception
      */
     private function getBinaryDataValues(Asset $asset, ConfigReader $reader): array
     {
@@ -98,7 +100,7 @@ final class AssetProvider implements ProviderInterface
         $id = $asset->getId();
 
         try {
-            $checksum = $asset->getChecksum();
+            $checksum = $this->getChecksum($asset);
         } catch (Exception $exception) {
             $checksum = null;
         }
@@ -121,10 +123,11 @@ final class AssetProvider implements ProviderInterface
                 $thumbnail = $asset->getThumbnail($thumbnailName);
 
                 try {
-                    $thumbChecksum = $thumbnail->getChecksum();
+                    $thumbChecksum = $this->getChecksum($thumbnail->getAsset());
                 } catch (Exception $exception) {
                     $thumbChecksum = null;
                 }
+
 
                 $data[$thumbnailName] = [
                     'checksum' => $thumbChecksum,
@@ -133,7 +136,7 @@ final class AssetProvider implements ProviderInterface
                         'id' => $id,
                         'thumbnail' => $thumbnailName,
                     ], UrlGeneratorInterface::ABSOLUTE_PATH),
-                    'filename' => pathinfo($thumbnail->getFileSystemPath(), PATHINFO_BASENAME),
+                    'filename' => $thumbnail->getAsset()->getFilename() //pathinfo($thumbnail->getAsset()->getKey(), PATHINFO_BASENAME),
                 ];
             }
 
@@ -146,7 +149,7 @@ final class AssetProvider implements ProviderInterface
                 }
 
                 try {
-                    $thumbChecksum = $thumbnail->getChecksum();
+                    $thumbChecksum = $this->getChecksum($thumbnail->getAsset());
                 } catch (Exception $exception) {
                     $thumbChecksum = null;
                 }
@@ -158,7 +161,7 @@ final class AssetProvider implements ProviderInterface
                         'id' => $id,
                         'thumbnail' => self::CIHUB_PREVIEW_THUMBNAIL,
                     ], UrlGeneratorInterface::ABSOLUTE_PATH),
-                    'filename' => pathinfo($thumbnail->getFileSystemPath(), PATHINFO_BASENAME),
+                    'filename' => $thumbnail->getAsset()->getKey() // pathinfo($thumbnail->get(), PATHINFO_BASENAME),
                 ];
             }
         } else {
@@ -180,7 +183,7 @@ final class AssetProvider implements ProviderInterface
                 }
 
                 try {
-                    $thumbChecksum = $thumbnail->getChecksum();
+                    $thumbChecksum = $this->getChecksum($thumbnail->getAsset());
                 } catch (Exception $exception) {
                     $thumbChecksum = null;
                 }
@@ -192,12 +195,36 @@ final class AssetProvider implements ProviderInterface
                         'id' => $id,
                         'thumbnail' => self::CIHUB_PREVIEW_THUMBNAIL,
                     ], UrlGeneratorInterface::ABSOLUTE_PATH),
-                    'filename' => pathinfo($thumbnail->getFileSystemPath(), PATHINFO_BASENAME),
+                    'filename' => $thumbnail->getAsset()->getFilename() // pathinfo($thumbnail->getFileSystemPath(), PATHINFO_BASENAME),
                 ];
             }
         }
 
         return $data;
+    }
+
+    /**
+     * @param Asset     $asset
+     * @param string    $type
+     *
+     * @return null|string
+     *
+     * @throws Exception
+     */
+    public function getChecksum(Asset $asset, $type = 'md5'): ?string
+    {
+        $file = $asset->getLocalFile();
+        if (is_file($file)) {
+            if ($type == 'md5') {
+                return md5_file($file);
+            } elseif ($type == 'sha1') {
+                return sha1_file($file);
+            } else {
+                throw new Exception("hashing algorithm '" . $type . "' isn't supported");
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -242,7 +269,7 @@ final class AssetProvider implements ProviderInterface
 
         if (!$asset instanceof Asset\Folder) {
             try {
-                $checksum = $asset->getChecksum();
+                $checksum =  $this->getChecksum($asset);
             } catch (Exception $exception) {
                 $checksum = null;
             }

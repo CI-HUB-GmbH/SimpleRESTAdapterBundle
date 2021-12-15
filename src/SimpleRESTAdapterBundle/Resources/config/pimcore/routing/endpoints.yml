@@ -1,0 +1,28 @@
+# Download Asset
+simple_rest_adapter_endpoints_download_asset:
+    path: /download-asset
+    defaults: { _controller: SimpleRESTAdapterBundle:Endpoint:downloadAsset }
+    methods:
+        - GET
+        - OPTIONS
+
+# Get Element
+simple_rest_adapter_endpoints_get_element:
+    path: /get-element
+    defaults: { _controller: SimpleRESTAdapterBundle:Endpoint:getElement }
+    methods:
+        - GET
+
+# Search
+simple_rest_adapter_endpoints_search:
+    path: /search
+    defaults: { _controller: SimpleRESTAdapterBundle:Endpoint:search }
+    methods:
+        - GET
+
+# Tree Items
+simple_rest_adapter_endpoints_tree_items:
+    path: /tree-items
+    defaults: { _controller: SimpleRESTAdapterBundle:Endpoint:treeItems }
+    methods:
+        - GET

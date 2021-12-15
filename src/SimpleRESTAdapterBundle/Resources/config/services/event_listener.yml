@@ -1,0 +1,26 @@
+services:
+
+    # Config Modification
+    CIHub\Bundle\SimpleRESTAdapterBundle\EventListener\ConfigModificationListener:
+        arguments:
+            - '@CIHub\Bundle\SimpleRESTAdapterBundle\Manager\IndexManager'
+            - '@messenger.default_bus'
+            - '@CIHub\Bundle\SimpleRESTAdapterBundle\Elasticsearch\Mapping\AssetMapping'
+            - '@CIHub\Bundle\SimpleRESTAdapterBundle\Elasticsearch\Mapping\DataObjectMapping'
+            - '@CIHub\Bundle\SimpleRESTAdapterBundle\Elasticsearch\Mapping\FolderMapping'
+        tags:
+            - { name: kernel.event_subscriber }
+
+    # Element Enqueueing
+    CIHub\Bundle\SimpleRESTAdapterBundle\EventListener\ElementEnqueueingListener:
+        arguments:
+            - '@CIHub\Bundle\SimpleRESTAdapterBundle\Loader\CompositeConfigurationLoader'
+            - '@messenger.default_bus'
+            - '@CIHub\Bundle\SimpleRESTAdapterBundle\Guard\WorkspaceGuardInterface'
+        tags:
+            - { name: kernel.event_subscriber }
+
+    # Exception
+    CIHub\Bundle\SimpleRESTAdapterBundle\EventListener\ExceptionListener:
+        tags:
+            - { name: kernel.event_subscriber }

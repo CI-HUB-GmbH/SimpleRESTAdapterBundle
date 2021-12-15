@@ -1,0 +1,13 @@
+# Swagger UI
+simple_rest_adapter_swagger_ui:
+    path: /swagger
+    defaults: { _controller: SimpleRESTAdapterBundle:Swagger:userInterface }
+    methods:
+        - GET
+
+# Swagger Config
+simple_rest_adapter_swagger_config:
+    path: /swagger-config
+    defaults: { _controller: SimpleRESTAdapterBundle:Swagger:config }
+    methods:
+        - GET

@@ -1,0 +1,5 @@
+services:
+
+    # Workspace Guard
+    CIHub\Bundle\SimpleRESTAdapterBundle\Guard\WorkspaceGuardInterface: '@CIHub\Bundle\SimpleRESTAdapterBundle\Guard\WorkspaceGuard'
+    CIHub\Bundle\SimpleRESTAdapterBundle\Guard\WorkspaceGuard: ~

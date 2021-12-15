@@ -1,0 +1,8 @@
+framework:
+    messenger:
+        transports:
+            datahub_es_index_queue: 'doctrine://default'
+        routing:
+            'CIHub\Bundle\SimpleRESTAdapterBundle\Messenger\DeleteIndexElementMessage': datahub_es_index_queue
+            'CIHub\Bundle\SimpleRESTAdapterBundle\Messenger\InitializeEndpointMessage': datahub_es_index_queue
+            'CIHub\Bundle\SimpleRESTAdapterBundle\Messenger\UpdateIndexElementMessage': datahub_es_index_queue

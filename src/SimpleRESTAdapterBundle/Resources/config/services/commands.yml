@@ -1,0 +1,11 @@
+services:
+
+    # Create or Update Mapping
+    CIHub\Bundle\SimpleRESTAdapterBundle\Command\CreateOrUpdateMappingCommand:
+        tags:
+            - { name: console.command, command: 'datahub:simple-rest:create-or-update-mapping' }
+
+    # Initialize Index
+    CIHub\Bundle\SimpleRESTAdapterBundle\Command\InitializeIndexCommand:
+        tags:
+            - { name: console.command, command: 'datahub:simple-rest:init-index' }

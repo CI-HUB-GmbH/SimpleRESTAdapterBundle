@@ -1,0 +1,12 @@
+services:
+
+    # Asset Provider
+    CIHub\Bundle\SimpleRESTAdapterBundle\Provider\AssetProvider:
+        arguments:
+            - '%simple_rest_adapter.default_preview_thumbnail%'
+            - '@router.default'
+
+    # Data Object Provider
+    CIHub\Bundle\SimpleRESTAdapterBundle\Provider\DataObjectProvider:
+        arguments:
+            - '@CIHub\Bundle\SimpleRESTAdapterBundle\DataCollector\CompositeDataCollector'

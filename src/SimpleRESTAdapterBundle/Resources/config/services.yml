@@ -1,0 +1,18 @@
+imports:
+    - { resource: services/*.yml }
+
+services:
+
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    # Controllers
+    CIHub\Bundle\SimpleRESTAdapterBundle\Controller\:
+        resource: '../../Controller'
+        public: true
+        tags: ['controller.service_arguments']
+        bind:
+            $configRepository: '@CIHub\Bundle\SimpleRESTAdapterBundle\Repository\DataHubConfigurationRepository'
+            $labelExtractor: '@CIHub\Bundle\SimpleRESTAdapterBundle\Extractor\LabelExtractorInterface'

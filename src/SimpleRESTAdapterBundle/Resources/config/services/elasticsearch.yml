@@ -1,0 +1,50 @@
+services:
+
+    #
+    # Builder
+    #
+
+    # Client Builder Factory
+    simple_rest_adapter.elasticsearch.client_factory:
+        class: Elasticsearch\Client
+        factory: ['@CIHub\Bundle\SimpleRESTAdapterBundle\Elasticsearch\Builder\ClientBuilder', 'build']
+
+    # Client Builder Service
+    CIHub\Bundle\SimpleRESTAdapterBundle\Elasticsearch\Builder\ClientBuilderInterface: '@CIHub\Bundle\SimpleRESTAdapterBundle\Elasticsearch\Builder\ClientBuilder'
+    CIHub\Bundle\SimpleRESTAdapterBundle\Elasticsearch\Builder\ClientBuilder:
+        arguments:
+            - '%simple_rest_adapter.es_hosts%'
+
+
+    #
+    # Index
+    #
+
+    # Index Persistence Service
+    CIHub\Bundle\SimpleRESTAdapterBundle\Elasticsearch\Index\IndexPersistenceService:
+        arguments:
+            - '@simple_rest_adapter.elasticsearch.client_factory'
+            - '@CIHub\Bundle\SimpleRESTAdapterBundle\Repository\DataHubConfigurationRepository'
+            - '@CIHub\Bundle\SimpleRESTAdapterBundle\Provider\AssetProvider'
+            - '@CIHub\Bundle\SimpleRESTAdapterBundle\Provider\DataObjectProvider'
+            - '%simple_rest_adapter.index_settings%'
+
+    # Query Service
+    CIHub\Bundle\SimpleRESTAdapterBundle\Elasticsearch\Index\IndexQueryService:
+        arguments:
+            - '@simple_rest_adapter.elasticsearch.client_factory'
+            - '%simple_rest_adapter.index_name_prefix%'
+
+
+    #
+    # Mapping
+    #
+
+    # Asset Mapping
+    CIHub\Bundle\SimpleRESTAdapterBundle\Elasticsearch\Mapping\AssetMapping: ~
+
+    # DataObject Mapping
+    CIHub\Bundle\SimpleRESTAdapterBundle\Elasticsearch\Mapping\DataObjectMapping: ~
+
+    # Folder Mapping
+    CIHub\Bundle\SimpleRESTAdapterBundle\Elasticsearch\Mapping\FolderMapping: ~

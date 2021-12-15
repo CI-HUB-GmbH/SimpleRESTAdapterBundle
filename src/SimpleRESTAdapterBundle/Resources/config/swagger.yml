@@ -1,0 +1,389 @@
+openapi: 3.0.0
+
+info:
+    title: 'DataHub Simple REST Adapter Endpoints'
+    description: 'Endpoints provided by the Simple REST Adapter Bundle.'
+    version: 1.0.0
+
+paths:
+    /pimcore-datahub-webservices/simplerest/{config}/get-element:
+        get:
+            description: 'Method to get one single element by type and ID.'
+            operationId: 'CIHub\Bundle\SimpleRESTAdapterBundle\Controller\EndpointController::getElementAction'
+            parameters:
+                -   name: 'Authorization'
+                    in: 'header'
+                    description: 'Bearer (in Swagger UI use authorize feature to set header).'
+                -   name: 'config'
+                    in: 'path'
+                    description: 'Name of the config.'
+                    required: true
+                    schema:
+                        type: string
+                -   name: 'type'
+                    in: 'query'
+                    description: 'Type of elements – asset or object.'
+                    required: true
+                    schema:
+                        type: string
+                        enum: [ 'asset', 'object' ]
+                -   name: 'id'
+                    in: 'query'
+                    description: 'ID of element.'
+                    required: true
+                    schema:
+                        type: integer
+            responses:
+                200:
+                    description: 'Successful operation.'
+                    content:
+                        application/json:
+                            schema:
+                                oneOf:
+                                    - { $ref: '#/components/schemas/ObjectElement' }
+                                    - { $ref: '#/components/schemas/AssetElement' }
+                400:
+                    $ref: '#/components/responses/Error400'
+                401:
+                    $ref: '#/components/responses/Error401'
+                404:
+                    $ref: '#/components/responses/Error404'
+                500:
+                    $ref: '#/components/responses/Error500'
+            tags: [ 'Endpoints' ]
+            security:
+                -   auth: [ ]
+
+    /pimcore-datahub-webservices/simplerest/{config}/search:
+        get:
+            description: 'Method to search for elements, returns elements of all types. For paging use link provided in link header of response.'
+            operationId: 'CIHub\Bundle\SimpleRESTAdapterBundle\Controller\EndpointController::searchAction'
+            parameters:
+                -   name: 'Authorization'
+                    in: 'header'
+                    description: 'Bearer (in Swagger UI use authorize feature to set header).'
+                -   name: 'config'
+                    in: 'path'
+                    description: 'Name of the config.'
+                    required: true
+                    schema:
+                        type: string
+                -   name: 'size'
+                    in: 'query'
+                    description: 'Max items of response, default 200.'
+                    required: false
+                    schema:
+                        type: integer
+                        default: 200
+                -   name: 'fulltext_search'
+                    in: 'query'
+                    description: 'Search term for fulltext search.'
+                    required: false
+                    schema:
+                        type: string
+                -   name: 'filter'
+                    in: 'query'
+                    description: 'Define filter for further filtering. See https://pimcore.com/docs/pimcore/current/Development_Documentation/Web_Services/Query_Filters.html for filter syntax, implemeted operators are $not, $or, $and.'
+                    required: false
+                    schema:
+                        type: string
+                -   name: 'order_by'
+                    in: 'query'
+                    description: 'Field to order by.'
+                    required: false
+                    schema:
+                        type: string
+                -   name: 'page_cursor'
+                    in: 'query'
+                    description: 'Page cursor for paging. Use page cursor of link header in last response.'
+                    required: false
+                    schema:
+                        type: string
+                -   name: 'include_aggs'
+                    in: 'query'
+                    description: 'Set to true to include aggregation information, default false.'
+                    required: false
+                    schema:
+                        type: boolean
+                        default: false
+            responses:
+                200:
+                    description: 'Successful operation.'
+                    content:
+                        application/json:
+                            schema:
+                                properties:
+                                    total_count: {
+                                        description: 'Total count of available results.',
+                                        type: integer
+                                    }
+                                    items: {
+                                        type: array,
+                                        items: {
+                                            oneOf: [
+                                                { $ref: '#/components/schemas/ObjectElement' },
+                                                { $ref: '#/components/schemas/AssetElement' }
+                                            ]
+                                        }
+                                    }
+                                    page_cursor: {
+                                        description: 'Page cursor for next page.',
+                                        type: string
+                                    }
+                                    type: object
+                400:
+                    $ref: '#/components/responses/Error400'
+                401:
+                    $ref: '#/components/responses/Error401'
+                500:
+                    $ref: '#/components/responses/Error500'
+            tags: [ 'Endpoints' ]
+            security:
+                -   auth: [ ]
+
+    /pimcore-datahub-webservices/simplerest/{config}/tree-items:
+        get:
+            description: 'Method to load all elements of a tree level. For paging use link provided in link header of response.'
+            operationId: 'CIHub\Bundle\SimpleRESTAdapterBundle\Controller\EndpointController::treeItemsAction'
+            parameters:
+                -   name: 'Authorization'
+                    in: 'header'
+                    description: 'Bearer (in Swagger UI use authorize feature to set header).'
+                -   name: 'config'
+                    in: 'path'
+                    description: 'Name of the config.'
+                    required: true
+                    schema:
+                        type: string
+                -   name: 'type'
+                    in: 'query'
+                    description: 'Type of elements – asset or object.'
+                    required: true
+                    schema:
+                        type: string
+                        enum: [ 'object', 'asset' ]
+                -   name: 'parent_id'
+                    in: 'query'
+                    description: 'ID of parent element.'
+                    required: false
+                    schema:
+                        type: integer
+                -   name: 'include_folders'
+                    in: 'query'
+                    description: 'Define if folders should be included, default true.'
+                    required: false
+                    schema:
+                        type: boolean
+                        default: true
+                -   name: 'size'
+                    in: 'query'
+                    description: 'Max items of response, default 200.'
+                    required: false
+                    schema:
+                        type: integer
+                        default: 200
+                -   name: 'fulltext_search'
+                    in: 'query'
+                    description: 'Search term for fulltext search.'
+                    required: false
+                    schema:
+                        type: string
+                -   name: 'filter'
+                    in: 'query'
+                    description: 'Define filter for further filtering. See https://pimcore.com/docs/pimcore/current/Development_Documentation/Web_Services/Query_Filters.html for filter syntax, implemented operators are $not, $or, $and.'
+                    required: false
+                    schema:
+                        type: string
+                -   name: 'order_by'
+                    in: 'query'
+                    description: 'Field to order by.'
+                    required: false
+                    schema:
+                        type: string
+                -   name: 'page_cursor'
+                    in: 'query'
+                    description: 'Page cursor for paging. Use page cursor of link header in last response.'
+                    required: false
+                    schema:
+                        type: integer
+                -   name: 'include_aggs'
+                    in: 'query'
+                    description: 'Set to true to include aggregation information, default false.'
+                    required: false
+                    schema:
+                        type: boolean
+                        default: false
+            responses:
+                200:
+                    description: 'Successful operation.'
+                    content:
+                        application/json:
+                            schema:
+                                properties:
+                                    total_count: {
+                                        description: 'Total count of available results.',
+                                        type: integer
+                                    }
+                                    items: {
+                                        type: array,
+                                        items: {
+                                            oneOf: [
+                                                { $ref: '#/components/schemas/ObjectElement' },
+                                                { $ref: '#/components/schemas/AssetElement' }
+                                            ]
+                                        }
+                                    }
+                                    page_cursor: {
+                                        description: 'Page cursor for next page.',
+                                        type: string
+                                    }
+                                    type: object
+                400:
+                    $ref: '#/components/responses/Error400'
+                401:
+                    $ref: '#/components/responses/Error401'
+                500:
+                    $ref: '#/components/responses/Error500'
+            tags: [ 'Endpoints' ]
+            security:
+                -   auth: [ ]
+
+components:
+    schemas:
+        ErrorReponse:
+            type: object
+            properties:
+                status:
+                    type: integer
+                message:
+                    type: string
+        ObjectElement:
+            type: object
+            properties:
+                system:
+                    type: object
+                    description: 'System attributes.'
+                    properties:
+                        id:
+                            type: integer
+                        key:
+                            type: string
+                        fullPath:
+                            type: string
+                        parentId:
+                            type: integer
+                        type:
+                            type: string
+                        subtype:
+                            type: string
+                        hasChildren:
+                            type: boolean
+                        creationDate:
+                            type: integer
+                        modificationDate:
+                            type: integer
+                data:
+                    type: object
+                    description: 'Data attributes.'
+                    additionalProperties:
+                        type: string
+        AssetElement:
+            type: object
+            properties:
+                system:
+                    type: object
+                    description: 'System attributes.'
+                    properties:
+                        id:
+                            type: integer
+                        key:
+                            type: string
+                        fullPath:
+                            type: string
+                        parentId:
+                            type: integer
+                        type:
+                            type: string
+                        subtype:
+                            type: string
+                        hasChildren:
+                            type: boolean
+                        creationDate:
+                            type: integer
+                        modificationDate:
+                            type: integer
+                        checksum:
+                            type: string
+                        mimeType:
+                            type: string
+                        fileSize:
+                            description: 'File size in bytes.'
+                            type: integer
+                dimensionData:
+                    type: object
+                    description: 'Dimension attributes.'
+                    properties:
+                        height:
+                            type: integer
+                        width:
+                            type: integer
+                binaryData:
+                    type: object
+                    description: 'List of links to binary data.'
+                    properties:
+                        original:
+                            type: string
+                        additionalProperties:
+                            type: string
+                xmpData:
+                    type: object
+                    description: 'Included XMP data.'
+                    additionalProperties:
+                        type: string
+                exifData:
+                    type: object
+                    description: 'Included EXIF data.'
+                    additionalProperties:
+                        type: string
+                iptcData:
+                    type: object
+                    description: 'Included IPTC data.'
+                    additionalProperties:
+                        type: string
+                metaData:
+                    type: object
+                    description: 'Included Pimcore meta data.'
+                    additionalProperties:
+                        type: string
+
+    responses:
+        Error400:
+            description: 'Invalid request, detailed information in response body.'
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/ErrorReponse'
+        Error401:
+            description: 'Access denied, detailed information in response body.'
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/ErrorReponse'
+        Error404:
+            description: 'Not found error.'
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/ErrorReponse'
+        Error500:
+            description: 'Application error, detailed information in response body.'
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/ErrorReponse'
+
+    securitySchemes:
+        auth:
+            type: http
+            bearerFormat: JWT
+            scheme: bearer

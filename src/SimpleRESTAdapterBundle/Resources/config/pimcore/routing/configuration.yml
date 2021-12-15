@@ -1,0 +1,34 @@
+# Delete the Endpoint Configuration
+simple_rest_adapter_config_delete:
+    path: /delete
+    defaults: { _controller: SimpleRESTAdapterBundle:Config:delete }
+    methods:
+        - GET
+
+# Get Data of Endpoint Configuration
+simple_rest_adapter_config_get:
+    path: /get
+    defaults: { _controller: SimpleRESTAdapterBundle:Config:get }
+    methods:
+        - GET
+
+# Get List of all Labels
+simple_rest_adapter_config_label_list:
+    path: /label-list
+    defaults: { _controller: SimpleRESTAdapterBundle:Config:labelList }
+    methods:
+        - GET
+
+# Save the Endpoint Configuration
+simple_rest_adapter_config_save:
+    path: /save
+    defaults: { _controller: SimpleRESTAdapterBundle:Config:save }
+    methods:
+        - POST
+
+# Get List of Thumbnails
+simple_rest_adapter_config_thumbnails:
+    path: /thumbnails
+    defaults: { _controller: SimpleRESTAdapterBundle:Config:thumbnails }
+    methods:
+        - GET

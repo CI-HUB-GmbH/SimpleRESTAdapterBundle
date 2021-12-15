@@ -1,0 +1,26 @@
+services:
+
+    # Delete Index Element
+    CIHub\Bundle\SimpleRESTAdapterBundle\Messenger\Handler\DeleteIndexElementMessageHandler:
+        arguments:
+            - '@CIHub\Bundle\SimpleRESTAdapterBundle\Manager\IndexManager'
+            - '@CIHub\Bundle\SimpleRESTAdapterBundle\Elasticsearch\Index\IndexPersistenceService'
+        tags:
+            - { name: messenger.message_handler }
+
+    # Initialize Endpoint
+    CIHub\Bundle\SimpleRESTAdapterBundle\Messenger\Handler\InitializeEndpointMessageHandler:
+        arguments:
+            - '@CIHub\Bundle\SimpleRESTAdapterBundle\Repository\DataHubConfigurationRepository'
+            - '@database_connection'
+            - '@messenger.default_bus'
+        tags:
+            - { name: messenger.message_handler }
+
+    # Update Index Element
+    CIHub\Bundle\SimpleRESTAdapterBundle\Messenger\Handler\UpdateIndexElementMessageHandler:
+        arguments:
+            - '@CIHub\Bundle\SimpleRESTAdapterBundle\Manager\IndexManager'
+            - '@CIHub\Bundle\SimpleRESTAdapterBundle\Elasticsearch\Index\IndexPersistenceService'
+        tags:
+            - { name: messenger.message_handler }

@@ -1,0 +1,27 @@
+services:
+
+    # Composite Data Collector
+    CIHub\Bundle\SimpleRESTAdapterBundle\DataCollector\CompositeDataCollector:
+        arguments:
+            - !tagged_iterator simple_rest_adapter.data_collector
+
+    # Hotspot Image Data Collector
+    CIHub\Bundle\SimpleRESTAdapterBundle\DataCollector\HotspotImageDataCollector:
+        arguments:
+            - '@CIHub\Bundle\SimpleRESTAdapterBundle\DataCollector\ImageDataCollector'
+        tags:
+            - { name: 'simple_rest_adapter.data_collector', priority: 20 }
+
+    # Image Data Collector
+    CIHub\Bundle\SimpleRESTAdapterBundle\DataCollector\ImageDataCollector:
+        arguments:
+            - '@router.default'
+        tags:
+            - { name: 'simple_rest_adapter.data_collector', priority: 30 }
+
+    # Image Gallery Data Collector
+    CIHub\Bundle\SimpleRESTAdapterBundle\DataCollector\ImageGalleryDataCollector:
+        arguments:
+            - '@CIHub\Bundle\SimpleRESTAdapterBundle\DataCollector\HotspotImageDataCollector'
+        tags:
+            - { name: 'simple_rest_adapter.data_collector', priority: 10 }

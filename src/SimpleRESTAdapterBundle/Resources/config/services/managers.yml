@@ -1,0 +1,7 @@
+services:
+
+    # Index Manager
+    CIHub\Bundle\SimpleRESTAdapterBundle\Manager\IndexManager:
+        arguments:
+            - '%simple_rest_adapter.index_name_prefix%'
+            - '@CIHub\Bundle\SimpleRESTAdapterBundle\Elasticsearch\Index\IndexPersistenceService'

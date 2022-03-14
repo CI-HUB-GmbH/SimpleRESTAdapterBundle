@@ -143,7 +143,6 @@ class EndpointController extends BaseEndpointController
         foreach ($indices as $index) {
             try {
                 $result = $indexService->get($id, $index);
-                dd($id, $index, $result);
             } catch (Missing404Exception $exception) {
                 $result = [];
             }

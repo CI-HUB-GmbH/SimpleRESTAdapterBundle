@@ -12,7 +12,7 @@
     {
       "name": "CI HUB GmbH",
       "email": "info@ci-hub.com",
-      "homepage": "https://www.ci-hub.com"
+      "homepage": "https://ci-hub.com"
     }
   ],
   "require": {
@@ -37,6 +37,9 @@
     }
   },
   "extra": {
+    "branch-alias": {
+      "dev-master": "2.0-dev"
+    },
     "pimcore": {
       "bundles": [
         "CIHub\\Bundle\\SimpleRESTAdapterBundle\\SimpleRESTAdapterBundle"

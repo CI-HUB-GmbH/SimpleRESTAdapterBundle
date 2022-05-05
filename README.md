@@ -39,7 +39,7 @@ Therefore, it can be used to connect Pimcore to other systems or to connect Fron
 
 ## License
 **CI HUB GmbH**, Benkertstrasse 4, 14467 Potsdam, Germany  
-[www.ci-hub.com](https://ci-hub.com), info@ci-hub.com  
+[ci-hub.com](https://ci-hub.com), info@ci-hub.com  
 Copyright © 2021 CI HUB GmbH. All rights reserved.
 
 For licensing details please visit [LICENSE.md](LICENSE.md)

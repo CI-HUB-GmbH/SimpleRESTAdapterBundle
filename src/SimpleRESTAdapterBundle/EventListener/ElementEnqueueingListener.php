@@ -69,10 +69,10 @@ class ElementEnqueueingListener implements EventSubscriberInterface
         return [
             AssetEvents::POST_ADD => 'enqueueAsset',
             AssetEvents::POST_UPDATE => 'enqueueAsset',
-            AssetEvents::POST_DELETE => 'removeAsset',
+            AssetEvents::PRE_DELETE => 'removeAsset',
             DataObjectEvents::POST_ADD => 'enqueueObject',
             DataObjectEvents::POST_UPDATE => 'enqueueObject',
-            DataObjectEvents::POST_DELETE => 'removeObject',
+            DataObjectEvents::PRE_DELETE => 'removeObject',
         ];
     }
 

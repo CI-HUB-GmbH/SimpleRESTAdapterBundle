@@ -1,7 +1,7 @@
 framework:
     messenger:
         transports:
-            datahub_es_index_queue: 'doctrine://default'
+            datahub_es_index_queue: 'doctrine://default?queue_name=datahub_es_index_queue'
         routing:
             'CIHub\Bundle\SimpleRESTAdapterBundle\Messenger\DeleteIndexElementMessage': datahub_es_index_queue
             'CIHub\Bundle\SimpleRESTAdapterBundle\Messenger\InitializeEndpointMessage': datahub_es_index_queue

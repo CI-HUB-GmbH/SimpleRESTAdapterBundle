@@ -128,18 +128,23 @@ final class IndexManager
      */
     public function getAllIndexNames(ConfigReader $reader): array
     {
+        $indices = [];
         $endpointName = $reader->getName();
 
-        return array_merge(
-            [
-                $this->getIndexName(self::INDEX_ASSET, $endpointName),
-                $this->getIndexName(self::INDEX_ASSET_FOLDER, $endpointName),
-                $this->getIndexName(self::INDEX_OBJECT_FOLDER, $endpointName),
-            ],
-            array_map(function ($className) use ($endpointName) {
-                return $this->getIndexName(strtolower($className), $endpointName);
-            }, $reader->getObjectClassNames())
-        );
+        if ($reader->isAssetIndexingEnabled()) {
+            $indices[] = $this->getIndexName(self::INDEX_ASSET, $endpointName);
+            $indices[] = $this->getIndexName(self::INDEX_ASSET_FOLDER, $endpointName);
+        }
+
+        if ($reader->isObjectIndexingEnabled()) {
+            $indices[] = $this->getIndexName(self::INDEX_OBJECT_FOLDER, $endpointName);
+
+            foreach ($reader->getObjectClassNames() as $className) {
+                $indices[] = $this->getIndexName(strtolower($className), $endpointName);
+            }
+        }
+
+        return $indices;
     }
 
     /**

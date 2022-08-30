@@ -3,7 +3,6 @@ services:
     # Delete Index Element
     CIHub\Bundle\SimpleRESTAdapterBundle\Messenger\Handler\DeleteIndexElementMessageHandler:
         arguments:
-            - '@CIHub\Bundle\SimpleRESTAdapterBundle\Manager\IndexManager'
             - '@CIHub\Bundle\SimpleRESTAdapterBundle\Elasticsearch\Index\IndexPersistenceService'
         tags:
             - { name: messenger.message_handler }

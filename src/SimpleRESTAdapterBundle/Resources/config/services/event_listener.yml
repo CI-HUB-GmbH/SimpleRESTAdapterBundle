@@ -15,6 +15,7 @@ services:
     CIHub\Bundle\SimpleRESTAdapterBundle\EventListener\ElementEnqueueingListener:
         arguments:
             - '@CIHub\Bundle\SimpleRESTAdapterBundle\Loader\CompositeConfigurationLoader'
+            - '@CIHub\Bundle\SimpleRESTAdapterBundle\Manager\IndexManager'
             - '@messenger.default_bus'
             - '@CIHub\Bundle\SimpleRESTAdapterBundle\Guard\WorkspaceGuardInterface'
         tags:

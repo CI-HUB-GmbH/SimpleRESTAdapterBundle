@@ -15,6 +15,7 @@
 namespace CIHub\Bundle\SimpleRESTAdapterBundle\Elasticsearch\Index;
 
 use Elasticsearch\Client;
+use Exception;
 use InvalidArgumentException;
 use Pimcore\Bundle\DataHubBundle\Configuration;
 use Pimcore\Model\Asset;
@@ -152,23 +153,17 @@ final class IndexPersistenceService
     /**
      * Deletes an element from an index.
      *
-     * @param ElementInterface $element   – A Pimcore element, either asset or object.
-     * @param string           $indexName – The name of the index to delete the item from.
+     * @param int    $elementId – The ID of a Pimcore element (asset or object).
+     * @param string $indexName – The name of the index to delete the item from.
      *
      * @return array<string, mixed>
      */
-    public function delete(ElementInterface $element, string $indexName): array
+    public function delete(int $elementId, string $indexName): array
     {
-        if (!$element instanceof Asset && !$element instanceof DataObject\AbstractObject) {
-            throw new InvalidArgumentException('This element type is currently not supported.');
-        }
-
-        $params = [
+        return $this->client->delete([
             'index' => $indexName,
-            'id' => $element->getId(),
-        ];
-
-        return $this->client->delete($params);
+            'id' => $elementId,
+        ]);
     }
 
     /**
@@ -275,6 +270,8 @@ final class IndexPersistenceService
      * @param string           $indexName    – The name of the index to update the item.
      *
      * @return array<string, mixed>
+     *
+     * @throws Exception
      */
     public function update(ElementInterface $element, string $endpointName, string $indexName): array
     {

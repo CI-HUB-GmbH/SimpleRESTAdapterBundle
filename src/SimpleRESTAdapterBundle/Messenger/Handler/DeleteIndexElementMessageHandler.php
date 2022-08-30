@@ -14,33 +14,22 @@
 
 namespace CIHub\Bundle\SimpleRESTAdapterBundle\Messenger\Handler;
 
-use Pimcore\Model\Asset;
-use Pimcore\Model\DataObject;
-use Pimcore\Model\Element\ElementInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use CIHub\Bundle\SimpleRESTAdapterBundle\Elasticsearch\Index\IndexPersistenceService;
-use CIHub\Bundle\SimpleRESTAdapterBundle\Manager\IndexManager;
 use CIHub\Bundle\SimpleRESTAdapterBundle\Messenger\DeleteIndexElementMessage;
 
 final class DeleteIndexElementMessageHandler implements MessageHandlerInterface
 {
-    /**
-     * @var IndexManager
-     */
-    private $indexManager;
-
     /**
      * @var IndexPersistenceService
      */
     private $indexService;
 
     /**
-     * @param IndexManager            $indexManager
      * @param IndexPersistenceService $indexService
      */
-    public function __construct(IndexManager $indexManager, IndexPersistenceService $indexService)
+    public function __construct(IndexPersistenceService $indexService)
     {
-        $this->indexManager = $indexManager;
         $this->indexService = $indexService;
     }
 
@@ -49,24 +38,6 @@ final class DeleteIndexElementMessageHandler implements MessageHandlerInterface
      */
     public function __invoke(DeleteIndexElementMessage $message): void
     {
-        switch ($message->getEntityType()) {
-            case 'asset':
-                $element = Asset::getById($message->getEntityId());
-                break;
-            case 'object':
-                $element = DataObject\AbstractObject::getById($message->getEntityId());
-                break;
-            default:
-                $element = null;
-        }
-
-        if (!$element instanceof ElementInterface) {
-            return;
-        }
-
-        $this->indexService->delete(
-            $element,
-            $this->indexManager->getIndexName($element, $message->getEndpointName())
-        );
+        $this->indexService->delete($message->getEntityId(), $message->getIndexName());
     }
 }

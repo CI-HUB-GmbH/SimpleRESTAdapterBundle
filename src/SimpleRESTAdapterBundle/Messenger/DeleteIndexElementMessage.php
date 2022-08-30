@@ -29,18 +29,18 @@ final class DeleteIndexElementMessage
     /**
      * @var string
      */
-    private $endpointName;
+    private $indexName;
 
     /**
      * @param int    $entityId
      * @param string $entityType
-     * @param string $endpointName
+     * @param string $indexName
      */
-    public function __construct(int $entityId, string $entityType, string $endpointName)
+    public function __construct(int $entityId, string $entityType, string $indexName)
     {
         $this->entityId = $entityId;
         $this->entityType = $entityType;
-        $this->endpointName = $endpointName;
+        $this->indexName = $indexName;
     }
 
     /**
@@ -62,8 +62,8 @@ final class DeleteIndexElementMessage
     /**
      * @return string
      */
-    public function getEndpointName(): string
+    public function getIndexName(): string
     {
-        return $this->endpointName;
+        return $this->indexName;
     }
 }

@@ -16,6 +16,7 @@ services:
     CIHub\Bundle\SimpleRESTAdapterBundle\DataCollector\ImageDataCollector:
         arguments:
             - '@router.default'
+            - '@CIHub\Bundle\SimpleRESTAdapterBundle\Provider\AssetProvider'
         tags:
             - { name: 'simple_rest_adapter.data_collector', priority: 30 }
 

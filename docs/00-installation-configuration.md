@@ -75,8 +75,13 @@ simple_rest_adapter:
 
 > Supported Elasticsearch version: ^7.0
 
-**Notice:** If you are using Elasticsearch version 8.0 and above, you should set `simple_rest_adapter.index_settings.analysis.tokenizer.datahub_ngram_tokenizer.type` as `ngram`, not `nGram`.
+**Notice:** If you are using Elasticsearch version 8.0 and above, you should set 
 
+`simple_rest_adapter.index_settings.analysis.tokenizer.datahub_ngram_tokenizer.type` as `ngram`, not `nGram`.
+
+and allow "wildcards" and "_all" indices by setting `action.destructive_requires_name: false` in the [elasticsearch configuration](https://www.elastic.co/guide/en/elasticsearch/reference/current/settings.html). 
+
+## Indexing
 To make sure the indexing queue is processed and index is filled, following command has to be executed on
 a regular basis, e.g. every 5 minutes.
 
